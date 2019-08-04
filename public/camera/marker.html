@@ -1,0 +1,118 @@
+<!--
+  This code is proprietary information of the
+	University of Michigan Information Interaction Lab.
+	https://mi2lab.com
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<title>360paper Camera</title>
+
+	<meta id="viewport" name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta id="theme-color" name="theme-color" content="#000000">
+	<link rel="icon" type="image/png" href="../favicon.png" />
+
+	<link href="//fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" type="text/css">
+	<link href="//use.fontawesome.com/releases/v5.2.0/css/all.css" rel="stylesheet" type="text/css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+	<link href="360paper.css" rel="stylesheet" type="text/css" />
+
+	<script src="/.common/https.js"></script>
+	<script src="/.common/require.js"></script>
+	<script src="/.common/debug.js"></script>
+
+	<script src="../360paper-utils.js"></script>
+
+	<!--
+	<script src="https://jeromeetienne.github.io/AR.js/aframe/examples/vendor/aframe/build/aframe.min.js"></script>
+	<script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+	-->
+
+	<script src="/.common/ar.js/aframe.js"></script>
+	<script src="/.common/ar.js/aframe-ar.js"></script>
+
+</head>
+
+<body>
+	<a-scene id="scene" embedded arjs="debugUIEnabled: false; sourceType: webcam; sourceWidth: 1280; sourceHeight: 720; cameraParametersUrl: /.common/ar.js/data/camera_para.dat; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+		<a-assets>
+			<canvas id="hiro-marker-canvas"></canvas>
+			<canvas id="kanji-marker-canvas"></canvas>
+		</a-assets>
+
+		<a-marker id="kanji-marker" preset="kanji">
+			<!-- <a-entity obj-model="obj: url(../obj/butterfly/model.obj); mtl: url(../obj/butterfly/materials.mtl)" position="0 0.1 0" rotation="0 270 90" scale="0.25 0.25 0.25"></a-entity> -->
+			<a-box src="#kanji-marker-canvas" scale="1.25 0 1.25" material="opacity: 0.99"></a-box>
+		</a-marker>
+
+		<a-marker id="hiro-marker" preset="hiro">
+			<!-- <a-plane id="_marker" color="white" position="0 0 0" rotation="90 0 0" width="1.5" height="1.5" material="side: double; opacity: 0.9"></a-plane>
+			<a-plane id="_left" color="white" position="-7.4 0 0" rotation="90 0 0" width="10" height="20" material="side: double; opacity: 0.9"></a-plane>
+			<a-plane id="_top" color="white" position="0 0 -8.3" rotation="90 0 0" width="20" height="10" material="side: double; opacity: 0.9"></a-plane>
+			<a-plane id="_bottom" color="white" position="0 0 4.1" rotation="90 0 0" width="20" height="10" material="side: double; opacity: 0.9"></a-plane>
+			<a-plane id="_right" color="white" position="7.4 0 0" rotation="90 0 0" width="10" height="20" material="side: double; opacity: 0.9"></a-plane> -->
+			<a-box src="#hiro-marker-canvas" scale="1.25 0 1.25" material="opacity: 0.99"></a-box>
+		</a-marker>
+
+		<a-camera id="camera" />
+
+	</a-scene>
+
+	<div id="capture-pane"></div>
+
+	<div id="grid" style="display: none"></div>
+
+	<div id="toolbar">
+		<div class="toolbtn-grp">
+			<input id="room" placeholder="Room Name"></input>
+			<button id="toggle-room" class="toolbtn"><i class="fa fa-door-open"></i></button>
+		</div>
+		<div class="toolbtn-grp">
+			<button id="toggle-360" class="toolbtn toggle">360</button>
+			<button id="toggle-vr" class="toolbtn toggle" disabled>VR</button>
+			<button id="toggle-marker" class="toolbtn toggle selected">M</button>
+			<button id="toggle-marker-auto" class="toolbtn toggle">MA</button>
+			<button id="toggle-face" class="toolbtn toggle">F</button>
+		</div>
+		<div class="toolbtn-grp">
+			<button id="take-snapshot" class="toolbtn"><i class="fa fa-camera"></i></button>
+		</div>
+	</div>
+
+	<script>
+		(function initWebcam() {
+			let _webcamEl = document.querySelector("video");
+
+			if (!_webcamEl) {
+				setTimeout(initWebcam, 500);
+				return;
+			}
+
+			let sceneCanvasEl = document.querySelector("canvas");
+			let sceneVideoEl = document.createElement("video");
+			sceneVideoEl.setAttribute("autoplay", "");
+			sceneVideoEl.srcObject = sceneCanvasEl.captureStream();
+
+			window.webcamEl = document.createElement("canvas");
+			let context = webcamEl.getContext("2d");
+
+			(function animate() {
+				requestAnimationFrame(animate);
+				webcamEl.width = _webcamEl.videoWidth;
+				webcamEl.height = _webcamEl.videoHeight;
+				context.drawImage(_webcamEl, 0, 0, webcamEl.width, webcamEl.height);
+				context.drawImage(sceneVideoEl, 0, 0, webcamEl.width, webcamEl.height);
+			})();
+		})();
+
+		loadCanvas(document.getElementById("hiro-marker-canvas"), "../img/hiro-marker.png");
+		loadCanvas(document.getElementById("kanji-marker-canvas"), "../img/kanji-marker.png");
+	</script>
+
+	<script id="360paper-js" src="360paper.js" data-mode="m"></script>
+</body>
+
+</html>

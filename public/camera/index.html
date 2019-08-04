@@ -1,0 +1,99 @@
+<!--
+  This code is proprietary information of the
+	University of Michigan Information Interaction Lab.
+	https://mi2lab.com
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<title>360paper Camera</title>
+
+	<meta id="viewport" name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta id="theme-color" name="theme-color" content="#000000">
+	<link rel="icon" type="image/png" href="../favicon.png" />
+
+	<link href="//fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" type="text/css" />
+	<link href="//use.fontawesome.com/releases/v5.2.0/css/all.css" rel="stylesheet" type="text/css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous" />
+
+	<link href="360paper.css" rel="stylesheet" type="text/css" />
+
+	<script src="/.common/https.js"></script>
+	<script src="/.common/require.js"></script>
+	<script src="/.common/debug.js"></script>
+
+	<script src="../360paper-utils.js"></script>
+
+	<!-- old A-Frame version works best with Cardboard viewer -->
+	<script src="//aframe.io/releases/0.5.0/aframe.min.js"></script>
+
+</head>
+
+<body>
+	<canvas id="webcam"></canvas>
+
+	<a-scene id="scene">
+		<a-assets>
+			<canvas id="preview-canvas"></canvas>
+		</a-assets>
+
+		<a-sky src="#preview-canvas" rotation="0 -90 0"></a-sky>
+
+		<a-camera id="#camera" look-controls-enabled="true" mouse-cursor position="0 1.6 0"></a-camera>
+	</a-scene>
+
+	<div id="capture-pane"></div>
+
+	<div id="grid"></div>
+
+	<div id="toolbar">
+		<div class="toolbtn-grp">
+			<input id="room" placeholder="Room Name"></input>
+			<button id="toggle-room" class="toolbtn"><i class="fa fa-door-open"></i></button>
+		</div>
+		<div class="toolbtn-grp">
+			<button id="toggle-360" class="toolbtn toggle selected">360</button>
+			<button id="toggle-vr" class="toolbtn toggle">VR</button>
+			<button id="toggle-marker" class="toolbtn toggle">M</button>
+			<button id="toggle-marker-auto" class="toolbtn toggle" disabled>MA</button>
+			<button id="toggle-face" class="toolbtn toggle">F</button>
+		</div>
+		<div class="toolbtn-grp">
+			<button id="take-snapshot" class="toolbtn"><i class="fa fa-camera"></i></button>
+		</div>
+	</div>
+
+	<script>
+		require("camera").then(function() {
+			new Camera({
+				camera: -1, // usually the rear camera
+				videoHeight: 720,
+				onstream: function() {
+					window.webcamEl = this.video;
+					window.webcamBinocular = false;
+
+					let
+						canvasEl = document.querySelector("#webcam"),
+						context = canvasEl.getContext("2d");
+
+					(function animate() {
+						requestAnimationFrame(animate);
+
+						canvasEl.width = webcamEl.videoWidth;
+						canvasEl.height = webcamEl.videoHeight;
+						context.drawImage(webcamEl, 0, 0);
+						if (webcamBinocular) {
+							context.drawImage(webcamEl, canvasEl.width / 2, 0);
+						}
+					})();
+				}
+			});
+		});
+	</script>
+
+	<script id="360paper-js" src="360paper.js" data-mode="360"></script>
+</body>
+
+</html>

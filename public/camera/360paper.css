@@ -1,0 +1,132 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: Roboto;
+  padding: 0;
+  margin: 0;
+  background: black;
+  user-select: none;
+  overflow: hidden;
+}
+
+#capture-pane {
+  position: absolute;
+  top: 0;
+  right: 56px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
+
+#toolbar {
+  position: absolute;
+  background: rgba(150, 150, 150, 0.5);
+  top: 0;
+  right: 0;
+  top: 0;
+  width: 56px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.toolbtn-grp {
+  margin-bottom: 15px;
+}
+
+.toolbtn {
+  float: left;
+  width: 44px;
+  height: 44px;
+  text-align: center;
+  margin: 4px;
+  font-size: 100%;
+  display: inline-block;
+  padding: 1px;
+  float: left;
+  border-radius: 2px;
+  background: #444;
+  line-height: 36px;
+  color: white;
+  cursor: pointer;
+}
+
+.toolbtn.toggle {
+  background: #666;
+}
+
+.toolbtn.selected {
+  background: #999;
+}
+
+.toolbtn:disabled {
+  background: #333;
+  border: 1px solid #666;
+  color: #666;
+  text-decoration: line-through;
+}
+
+button, input {
+  background: #666666;
+  padding: 5px;
+  color: white;
+  border: none;
+}
+
+button {
+  border-radius: 2px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.live {
+  border: 2px solid #f00;
+}
+
+#room {
+  position: absolute;
+  top: 0px;
+  right: 56px;
+  height: 32px;
+  display: none;
+}
+
+#grid {
+  background-image: url("../img/360paper-v4.png");
+  background-size: cover;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  z-index: 1;
+  transform: rotate(90deg);
+}
+
+@media screen and (orientation: landscape) {
+  #grid {
+    transform: none;
+  }
+}
+
+#webcam {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.a-enter-vr {
+  display: none;
+}
+
+#debug {
+  left: 0;
+  right: auto;
+}

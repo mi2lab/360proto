@@ -1,0 +1,444 @@
+/*
+  This code is proprietary information of the
+	University of Michigan Information Interaction Lab.
+  https://mi2lab.com
+*/
+
+html, body {
+  height: 100%;
+  background: #2b2b2b;
+  color: #cccccc;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  min-width: 1230px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #999;
+}
+
+.toolbar {
+  box-sizing: border-box;
+  position: absolute;
+  height: 32px;
+  width: 100%;
+  padding: 4px;
+  min-width: 1230px;
+}
+
+#brand {
+  font-size: 24px;
+  font-weight: normal;
+  color: white;
+  display: inline-block;
+  float: left;
+  margin-right: 10px;
+  height: 32px;
+}
+
+#room {
+  float: left;
+}
+
+.toolbtn-grp {
+  display: inline-block;
+  float: left;
+  margin-right: 16px;
+  height: 32px;
+}
+
+.toolbtn {
+  float: left;
+  width: 28px;
+  height: 28px;
+  text-align: center;
+  margin: 5px;
+  font-size: 100%;
+  display: inline-block;
+  padding: 1px;
+  float: left;
+  margin-top: 0;
+  margin-right: 10px;
+  border-radius: 2px;
+  background: #444;
+  line-height: 21px;
+  color: white;
+  cursor: pointer;
+}
+
+.toolbtn.toggle {
+  background: #666;
+}
+
+.toolbtn.selected {
+  background: #999;
+}
+
+.toolbtn i {
+  font-size: 18px;
+}
+
+/*
+.toolbtn.tiny {
+  width: 20px;
+  height: 20px;
+  line-height: 18px;
+}
+
+.toolbtn.tiny i {
+  font-size: 12px;
+}
+*/
+
+main {
+  position: absolute;
+  width: 100%;
+  min-width: 1230px;
+  height: calc(100% - 32px);
+  top: 32px;
+}
+
+.pane {
+  background: #3e3e3e;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  box-sizing: border-box;
+  padding: 5px;
+  z-index: 0;
+}
+
+.pane h2 {
+  height: 32px;
+  margin: 0;
+  margin-right: 4px;
+  padding: 0;
+  display: inline-block;
+  margin: 12px 5px 5px 10px;
+  float: left;
+}
+
+.pane .actions {
+  padding: 5px;
+  display: inline-block;
+  z-index: 10001;
+}
+
+.pane .actions .selected {
+  background: #999;
+}
+
+.pane .actions .toolbtn {
+  width: 29px;
+  height: 29px;
+  line-height: 0;
+  margin-top: 3px;
+}
+
+.pane.inner-pane {
+  position: relative;
+  float: left;
+}
+
+.spacer {
+  height: 2px;
+  clear: both;
+}
+
+.label {
+  font-size: 100%;
+  line-height: 10px;
+  background: #666;
+  border-radius: 2px;
+  padding: 2px;
+}
+
+/* View */
+
+#view-pane {
+  left: 4px;
+  top: 4px;
+  width: calc(.666 * calc(100% - 12px));
+  height: calc(.7 * calc(100% - 12px));
+  overflow: hidden;
+}
+
+#toggle-inspector {
+  border: 1px solid #ed3160;
+  width: 100px;
+}
+
+#toggle-inspector.selected {
+  background: #ed3160;
+}
+
+#stencil {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 25px);
+  max-width: 100%;
+  max-height: 100%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: -1;
+}
+
+#container {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 25px);
+  width: 100%;
+  height: 100%;
+  max-width: 50%;
+  max-height: 77%;
+  transform: translateX(-50%) translateY(-50%);
+  overflow: hidden;
+}
+
+#container.fullscreen {
+  position: fixed;
+  left: 0;
+  top: 34px;
+  width: 100vw !important;
+  height: calc(100vh - 34px) !important;
+  transform: none;
+  max-height: 100vh;
+  max-width: 100vw;
+}
+
+#webcam, #screen, #aframe {
+  border: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#screen {
+  border: 1px dotted #666;
+  opacity: 0.9;
+  z-index: 9999;
+  display: none;
+}
+
+#webcam {
+  object-fit: cover;
+}
+
+#app-canvas {
+  position: absolute;
+  right: 0;
+  width: 128px;
+  height: 72px;
+  z-index: 100000;
+}
+
+/* Scene */
+
+.preview {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  float: left;
+  margin-right: 4px;
+}
+
+.preview .layer {
+  border: 1px solid #333;
+  width: 48px;
+  height: 48px;
+}
+
+.dragover {
+  outline: 3px solid #c0c0c0;
+}
+
+.foreground {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='48px' width='48px'><text x='10' y='40' fill='#333' font-size='48' font-family='Arial'>F</text></svg>");
+}
+
+.midground {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='48px' width='48px'><text x='4' y='40' fill='#333' font-size='48' font-family='Arial'>M</text></svg>");
+}
+
+.background {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='48px' width='48px'><text x='8' y='40' fill='#333' font-size='48' font-family='Arial'>B</text></svg>")
+}
+
+#controller-model {
+  background-image: url(img/controller-model.jpg);
+  background-size: contain;
+}
+
+#controller-menu {
+  background-image: url(img/controller-menu.jpg);
+  background-size: contain;
+}
+
+#hiro-marker {
+  background-image: url(img/hiro-marker.png);
+  background-size: contain;
+}
+
+#kanji-marker {
+  background-image: url(img/kanji-marker.png);
+  background-size: contain;
+}
+
+#face-mask {
+  background-image: url(img/face-mask.jpg);
+  background-size: contain;
+}
+
+/* Scene */
+
+#scene-pane {
+  top: 4px;
+  right: 4px;
+  width: calc(.333 * calc(100% - 12px));
+  height: calc(.6 * calc(100% - 12px));
+}
+
+/* Capture */
+
+#capture-pane {
+  right: 4px;
+  bottom: 4px;
+  width: calc(.333 * calc(100% - 12px));
+  height: calc(.4 * calc(100% - 12px));
+}
+
+#capture-canvas {
+  width: 100%;
+  height: 400px;
+}
+
+/* Collect */
+
+#collect-pane {
+  left: 4px;
+  bottom: 4px;
+  width: calc(.666 * calc(100% - 12px));
+  height: calc(.3 * calc(100% - 12px));
+}
+
+#resources {
+  min-height: 100px;
+}
+
+.resource {
+  border: 1px solid #333;
+  height: 100px;
+  margin: 4px;
+}
+
+.resource.selected, .layer.selected {
+  outline: 3px solid white;
+}
+
+/*video.resource {
+  opacity: 0.5;
+}*/
+
+video.resource.live {
+  border: 2px solid red;
+  /*opacity: 1.0;*/
+}
+
+#trash {
+  font-size: 50px;
+  color: white;
+  position: absolute;
+  z-index: 11000;
+  display: none;
+  text-align: center;
+  background: #800;
+  width: 100%;
+}
+
+/* general */
+
+button, input, select {
+  background: #666666;
+  padding: 5px;
+  color: white;
+  border: none;
+}
+
+button {
+  border-radius: 2px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+label {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  cursor: pointer;
+  background: #444;
+  border-radius: 2px;
+  border: 2px solid #444;
+}
+
+input[type="checkbox"]:checked {
+  background: #999;
+  border: 2px solid #fff;
+}
+
+/* a bunch of generated css for sliders */
+
+input[type=range].slider {
+  -webkit-appearance: none;
+  width: 100px;
+  margin: 3.8px 0;
+  background: transparent;
+}
+
+input[type=range].slider:focus {
+  outline: none;
+}
+
+input[type=range].slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  border: 0.2px solid #666;
+  background: #444;
+}
+
+input[type=range].slider::-webkit-slider-thumb {
+  border: 2px solid #fff;
+  border-radius: 2px;
+  background: #999;
+  height: 14px;
+  width: 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -4px;
+}
+
+input[type=range]#opacity::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #000, #fff);
+  width: 100%;
+}

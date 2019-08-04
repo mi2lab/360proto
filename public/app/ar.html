@@ -1,0 +1,55 @@
+<!--
+  This code is proprietary information of the
+	University of Michigan Information Interaction Lab.
+	https://mi2lab.com
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<title>360paper App</title>
+
+	<meta id="viewport" name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta id="theme-color" name="theme-color" content="#000000">
+	<link rel="icon" type="image/png" href="favicon.png" />
+
+	<link href="//fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" type="text/css">
+	<link href="//use.fontawesome.com/releases/v5.2.0/css/all.css" rel="stylesheet" type="text/css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+	<link href="360paper.css" rel="stylesheet" type="text/css" />
+
+	<script src="/.common/aframe-xr/aframe-master.js"></script>
+	<script src="/.common/aframe-xr/three.xr.js"></script>
+	<script src="/.common/aframe-xr/aframe-xr.js"></script>
+
+	<script src="/.common/https.js"></script>
+	<script src="/.common/require.js"></script>
+	<script src="/.common/debug.js"></script>
+
+	<script src="../360paper-utils.js"></script>
+
+</head>
+
+<body>
+	<div id="toolbar">
+		<div class="toolbtn-grp">
+			<input id="room" placeholder="Room Name"></input>
+			<button id="toggle-room" class="toolbtn toggle"><i class="fa fa-door-open"></i></button>
+		</div>
+		<div class="toolbtn-grp">
+			<button id="toggle-run" class="toolbtn"><i class="fa fa-pause"></i></button>
+			<button id="toggle-xr" class="toolbtn">VR</button>
+		</div>
+	</div>
+
+	<a-scene id="scene" embedded>
+		<!-- pretty much empty for AR -->
+		<a-camera id="camera" position="0 0 1.6"></a-camera>
+	</a-scene>
+
+	<script id="360paper-js" src="360paper.js" data-xr="ar"></script>
+</body>
+
+</html>

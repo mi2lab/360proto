@@ -1,0 +1,158 @@
+<!--
+  This code is proprietary information of the
+	University of Michigan Information Interaction Lab.
+	https://mi2lab.com
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>360paper Camera</title>
+
+  <meta id="viewport" name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta id="theme-color" name="theme-color" content="#000000">
+  <link rel="icon" type="image/png" href="../favicon.png" />
+
+  <link href="//fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" type="text/css">
+  <link href="//use.fontawesome.com/releases/v5.2.0/css/all.css" rel="stylesheet" type="text/css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+  <link href="360paper.css" rel="stylesheet" type="text/css" />
+
+  <script src="/.common/https.js"></script>
+  <script src="/.common/require.js"></script>
+  <script src="/.common/debug.js"></script>
+
+  <script src="../360paper-utils.js"></script>
+
+</head>
+
+<body>
+  <video id="_webcam" style="display: none" playsinline></video>
+  <canvas id="_imageData"></canvas>
+  <img id="_image" src="assets/brfv4_lion.png" style="display: none" />
+
+  <canvas id="face-mask-canvas"></canvas>
+
+  <div id="capture-pane"></div>
+
+  <div id="grid" style="display: none"></div>
+
+  <div id="toolbar">
+    <div class="toolbtn-grp">
+      <input id="room" placeholder="Room Name"></input>
+      <button id="toggle-room" class="toolbtn"><i class="fa fa-door-open"></i></button>
+    </div>
+    <div class="toolbtn-grp">
+      <button id="toggle-360" class="toolbtn toggle">360</button>
+      <button id="toggle-vr" class="toolbtn toggle" disabled>VR</button>
+      <button id="toggle-marker" class="toolbtn toggle">M</button>
+      <button id="toggle-marker-auto" class="toolbtn toggle" disabled>MA</button>
+      <button id="toggle-face" class="toolbtn toggle selected">F</button>
+    </div>
+    <div class="toolbtn-grp">
+      <button id="take-snapshot" class="toolbtn"><i class="fa fa-camera"></i></button>
+    </div>
+  </div>
+
+  <script src="js/BRFv4DemoMinimalWebcam.js"></script>
+
+  <script>
+    var mask = window.webcamMask = document.getElementById("face-mask-canvas");
+
+    var image = document.getElementById("_image");
+    image.onload = function() {
+      loadCanvas(mask, this.src);
+    }
+
+    handleTrackingResults = function(
+      brfv4, // namespace
+      faces, // tracked faces
+      draw // canvas context to draw into
+    ) {
+
+      var face = faces[0];
+
+      if (face.state === brfv4.BRFState.FACE_TRACKING_START ||
+        face.state === brfv4.BRFState.FACE_TRACKING) {
+
+        draw.strokeStyle = "#00a0ff";
+
+        for (var k = 0; k < face.vertices.length; k += 2) {
+          draw.beginPath();
+          draw.arc(face.vertices[k], face.vertices[k + 1], 2, 0, 2 * Math.PI);
+          draw.stroke();
+        }
+
+        function toDegree(x) {
+          return x * 180.0 / Math.PI;
+        }
+
+        var x = face.points[27].x;
+        var y = face.points[27].y;
+        var scaleX = (face.scale / 480) * (1 - toDegree(Math.abs(face.rotationY)) / 110.0) * 3;
+        var scaleY = (face.scale / 480) * (1 - toDegree(Math.abs(face.rotationX)) / 110.0) * 3;
+
+        draw.save();
+        try {
+          if (mask && mask.width && mask.height) {
+            draw.transform(scaleX, 0.0, 0.0, scaleY, x, y);
+            draw.rotate(face.rotationZ);
+            draw.globalAlpha = 0.8;
+            draw.drawImage(mask, -mask.width / 2, -mask.height / 2);
+          }
+        } finally {
+          draw.restore();
+        }
+
+        /*webrtc.send({
+          sender: "360paper/camera",
+          action: "change",
+          detail: {
+            face: {
+              x: x,
+              y: y,
+              scaleX: scaleX,
+              scaleY: scaleY,
+              rotation: toDegree(face.rotationZ)
+            }
+          }
+        });*/
+      }
+    };
+
+    onResize = function() {
+
+      function resize(el) {
+        var ww = window.innerWidth;
+        var wh = window.innerHeight;
+
+        var s = wh / el.height;
+
+        if (el.width * s < ww) {
+          s = ww / el.width;
+        }
+
+        var iw = el.width * s;
+        var ih = el.height * s;
+        var ix = (ww - iw) * 0.5;
+        var iy = (wh - ih) * 0.5;
+
+        el.style.transformOrigin = "0% 0%";
+        el.style.transform = "matrix(" + s + ", 0, 0, " + s + ", " + ix + ", " + iy + ")";
+      }
+
+      resize(document.getElementById("_imageData"));
+    };
+  </script>
+
+  <script>
+    window.webcamEl = document.getElementById("_imageData");
+  </script>
+
+  <script id="360paper-js" src="360paper.js" data-mode="f"></script>
+
+</body>
+
+</html>

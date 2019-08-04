@@ -1,0 +1,77 @@
+<!--
+  This code is proprietary information of the
+	University of Michigan Information Interaction Lab.
+	https://mi2lab.com
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<title>360paper App</title>
+
+	<meta id="viewport" name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta id="theme-color" name="theme-color" content="#000000">
+	<link rel="icon" type="image/png" href="favicon.png" />
+
+	<link href="//fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" type="text/css">
+	<link href="//use.fontawesome.com/releases/v5.2.0/css/all.css" rel="stylesheet" type="text/css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+	<link href="360paper.css" rel="stylesheet" type="text/css" />
+
+	<script src="/.common/aframe-xr/aframe-master.js"></script>
+	<script src="/.common/aframe-xr/three.xr.js"></script>
+	<script src="/.common/aframe-xr/aframe-xr.js"></script>
+
+	<script src="/.common/https.js"></script>
+	<script src="/.common/require.js"></script>
+	<script src="/.common/debug.js"></script>
+
+	<script src="../360paper-utils.js"></script>
+
+</head>
+
+<body>
+	<div id="toolbar">
+		<div class="toolbtn-grp">
+			<input id="room" placeholder="Room Name"></input>
+			<button id="toggle-room" class="toolbtn toggle"><i class="fa fa-door-open"></i></button>
+		</div>
+		<div class="toolbtn-grp">
+			<button id="toggle-run" class="toolbtn"><i class="fa fa-play"></i></button>
+			<button id="toggle-xr" class="toolbtn">AR</button>
+		</div>
+	</div>
+
+	<a-scene id="scene" embedded>
+		<a-assets id="assets">
+			<canvas id="hud-canvas"></canvas>
+			<canvas id="background-canvas"></canvas>
+			<canvas id="midground-canvas"></canvas>
+			<canvas id="foreground-canvas"></canvas>
+			<canvas id="controller-model-canvas"></canvas>
+			<canvas id="controller-menu-canvas"></canvas>
+			<canvas id="hiro-marker-canvas"></canvas>
+			<canvas id="kanji-marker-canvas"></canvas>
+			<canvas id="face-mask-canvas"></canvas>
+		</a-assets>
+
+		<a-videosphere id="background" src="#background-canvas" position="0 1.6 0" rotation="0 -90 0" side="double" opacity="0.99" radius="9"></a-videosphere>
+		<a-videosphere id="midground" src="#midground-canvas" position="0 1.6 0" rotation="0 -90 0" side="double" opacity="0.99" radius="6"></a-videosphere>
+		<a-videosphere id="foreground" src="#foreground-canvas" position="0 1.6 0" rotation="0 -90 0" side="double" opacity="0.99" radius="3"></a-videosphere>
+
+		<a-entity id="controller" daydream-controls="hand: right; model: true">
+			<a-box id="controller-model" src="#controller-model-canvas" position="0 0 -0.1" rotation="-90 0 0" scale="0.5 0.5 0.001" opacity="0.99"></a-box>
+			<a-box id="controller-menu" src="#controller-menu-canvas" position="0 0 -1" rotation="-12 0 0" scale="1 1 0.001" opacity="0.99"></a-box>
+		</a-entity>
+
+		<a-camera id="camera" position="0 0 1.6">
+			<!-- <a-plane id="hud" src="#hud-canvas" position="0 0 -2" rotation="-12 0 0" scale="3 3"></a-plane> -->
+		</a-camera>
+	</a-scene>
+
+	<script id="360paper-js" src="360paper.js" data-xr="vr"></script>
+</body>
+
+</html>

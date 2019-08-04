@@ -1,3 +1,16 @@
-# 360proto
+# 360paper
 
-We will release the 360 paper prototyping templates and AR/VR design jam materials accompanying our CHI 2019 paper here. Stay tuned :-)
+Author: Michael Nebeling <nebeling@umich.edu>
+Version: 1.0 alpha
+License: TBD
+
+## Running 360paper
+
+<a href="https://docs.npmjs.com/getting-started/installing-node">Install npm</a> and then run the following:
+
+```
+npm install
+npm start
+```
+
+Open your web browser and go to http://localhost/.
